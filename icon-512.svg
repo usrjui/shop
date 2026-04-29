@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="112" fill="#EA6C1E"/>
+  <clipPath id="awn"><rect x="70" y="196" width="372" height="86" rx="8"/></clipPath>
+  <rect x="70" y="196" width="372" height="86" rx="8" fill="#c0392b"/>
+  <rect x="70" y="196" width="48" height="86" fill="#e74c3c" clip-path="url(#awn)"/>
+  <rect x="166" y="196" width="48" height="86" fill="#e74c3c" clip-path="url(#awn)"/>
+  <rect x="262" y="196" width="48" height="86" fill="#e74c3c" clip-path="url(#awn)"/>
+  <rect x="358" y="196" width="48" height="86" fill="#e74c3c" clip-path="url(#awn)"/>
+  <path d="M70 282 Q93 304 116 282 Q139 304 162 282 Q185 304 208 282 Q231 304 254 282 Q277 304 300 282 Q323 304 346 282 Q369 304 392 282 Q415 304 442 282" fill="none" stroke="#c0392b" stroke-width="6"/>
+  <rect x="70" y="282" width="372" height="182" fill="#FFF8F0"/>
+  <rect x="70" y="282" width="372" height="182" fill="none" stroke="#d35400" stroke-width="5"/>
+  <rect x="96" y="306" width="122" height="90" rx="10" fill="#AEE4F8" stroke="#d35400" stroke-width="4.5"/>
+  <line x1="157" y1="306" x2="157" y2="396" stroke="#d35400" stroke-width="3.5"/>
+  <line x1="96" y1="351" x2="218" y2="351" stroke="#d35400" stroke-width="3.5"/>
+  <rect x="294" y="306" width="122" height="90" rx="10" fill="#AEE4F8" stroke="#d35400" stroke-width="4.5"/>
+  <line x1="355" y1="306" x2="355" y2="396" stroke="#d35400" stroke-width="3.5"/>
+  <line x1="294" y1="351" x2="416" y2="351" stroke="#d35400" stroke-width="3.5"/>
+  <rect x="202" y="346" width="108" height="118" rx="10" fill="#F0C080" stroke="#d35400" stroke-width="4.5"/>
+  <circle cx="291" cy="405" r="8" fill="#d35400"/>
+  <polygon points="48,208 464,208 426,148 86,148" fill="#c0392b"/>
+  <polygon points="48,208 464,208 426,148 86,148" fill="none" stroke="#922b21" stroke-width="4.5"/>
+  <rect x="346" y="100" width="42" height="52" rx="8" fill="#922b21"/>
+  <rect x="160" y="158" width="192" height="48" rx="8" fill="#fff" stroke="#d35400" stroke-width="3.5"/>
+  <text x="256" y="191" font-family="'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="700" fill="#EA6C1E" text-anchor="middle">SHOP</text>
+  <rect x="56" y="464" width="400" height="16" rx="8" fill="#d35400" opacity="0.35"/>
+</svg>
