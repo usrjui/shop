@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ราคาสินค้า">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.json">
+  <title>เช็คราคาสินค้า</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f172a;
+      --surface:  #1e293b;
+      --card:     #ffffff;
+      --accent:   #22d3ee;
+      --green:    #4ade80;
+      --muted:    #94a3b8;
+      --text:     #1e293b;
+      --radius:   14px;
+    }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      background: var(--bg);
+      min-height: 100dvh;
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-top: env(safe-area-inset-top);
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      background: var(--bg);
+      padding: 16px 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .app-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .item-count {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 10px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 11px 12px 11px 36px;
+      color: #fff;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus { border-color: var(--accent); }
+
+    /* ===== TABS (filter) ===== */
+    .tabs-wrap {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 0 12px;
+      scrollbar-width: none;
+    }
+    .tabs-wrap::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex-shrink: 0;
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ===== LIST ===== */
+    .list {
+      padding: 8px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: fadeUp .25s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-left { flex: 1; min-width: 0; }
+
+    .card-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 3px;
+    }
+
+    .card-note {
+      font-size: 12px;
+      color: #d63384;
+      font-style: italic;
+    }
+
+    .card-type {
+      display: inline-block;
+      font-size: 11px;
+      color: #6366f1;
+      background: #ede9fe;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 4px;
+    }
+
+    .card-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .card-price {
+      font-size: 22px;
+      font-weight: 600;
+      color: #16a34a;
+      line-height: 1;
+    }
+
+    .card-unit {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .edit-btn {
+      margin-top: 8px;
+      background: none;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 12px;
+      color: #475569;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .edit-btn:active { background: #f1f5f9; transform: scale(.97); }
+
+    /* ===== EMPTY ===== */
+    .empty {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* ===== SKELETON ===== */
+    .skeleton {
+      background: var(--surface);
+      border-radius: var(--radius);
+      height: 72px;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: .5; }
+      50%       { opacity: 1; }
+    }
+
+    /* ===== MODAL ===== */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      width: 100%;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+      animation: slideUp .25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .modal-sub {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      font-size: 13px;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .field-input {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 16px;
+      color: #1e293b;
+      margin-bottom: 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .field-input:focus { border-color: #22d3ee; }
+
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      background: none;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 15px;
+      color: #64748b;
+      cursor: pointer;
+    }
+
+    .btn-save {
+      flex: 2;
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      background: #0f172a;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn-save:active { opacity: .8; }
+    .btn-save:disabled { opacity: .5; }
+
+    .saving-text { color: var(--muted); font-size: 13px; text-align: center; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-top">
+      <div class="app-title">เช็คราคาสินค้า</div>
+      <div class="item-count" id="countBadge">กำลังโหลด...</div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="searchInput" placeholder="ค้นหาชื่อสินค้า..." oninput="filterData()">
+    </div>
+    <div class="tabs-wrap" id="tabs"></div>
+  </div>
+
+  <div class="list" id="listContainer">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+
+  <!-- Modal แก้ไขราคา -->
+  <div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-sub" id="modalSub"></div>
+      <div class="field-label">ราคา (฿)</div>
+      <input class="field-input" id="newPrice" type="number" inputmode="decimal" placeholder="0">
+      <div class="field-label">หมายเหตุ (ถ้ามี)</div>
+      <input class="field-input" id="newNote" type="text" placeholder="เช่น ของหมด, สินค้าใหม่">
+      <div class="modal-btns">
+        <button class="btn-cancel" onclick="closeModalDirect()">ยกเลิก</button>
+        <button class="btn-save" id="saveBtn" onclick="saveData()">บันทึก</button>
+      </div>
+      <div class="saving-text" id="savingText"></div>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ เปลี่ยน URL นี้เป็น Apps Script Web App URL ของพี่
+    const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+    let fullData = [];
+    let activeType = '';
+    let editingRow = null;
+
+    async function loadData() {
+      try {
+        const res  = await fetch(API_URL);
+        const json = await res.json();
+        fullData   = json.data;
+        buildTabs(fullData.slice(1));
+        filterData();
+      } catch (err) {
+        document.getElementById('listContainer').innerHTML =
+          '<div class="empty">โหลดข้อมูลไม่ได้<br>ตรวจสอบ API URL</div>';
+      }
+    }
+
+    function buildTabs(items) {
+      const types  = ['ทั้งหมด', ...new Set(items.map(r => r[3]).filter(Boolean))].sort((a,b) => a === 'ทั้งหมด' ? -1 : 0);
+      const wrap   = document.getElementById('tabs');
+      wrap.innerHTML = types.map(t => `
+        <button class="tab ${t === 'ทั้งหมด' ? 'active' : ''}" onclick="setTab('${t}',this)">${t}</button>
+      `).join('');
+    }
+
+    function setTab(type, el) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      activeType = type === 'ทั้งหมด' ? '' : type;
+      filterData();
+    }
+
+    function filterData() {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const rows = fullData.slice(1).filter((row, i) => {
+        const matchSearch = row[0].toString().toLowerCase().includes(term);
+        const matchType   = !activeType || row[3] === activeType;
+        return matchSearch && matchType;
+      });
+      render(rows);
+    }
+
+    function render(items) {
+      const c = document.getElementById('listContainer');
+      document.getElementById('countBadge').textContent = `${items.length} รายการ`;
+
+      if (!items.length) {
+        c.innerHTML = '<div class="empty">ไม่พบสินค้าที่ค้นหา</div>';
+        return;
+      }
+
+      c.innerHTML = items.map((row, i) => {
+        const rowIdx = fullData.findIndex(r => r[0] === row[0]) + 1;
+        const price  = row[1] !== '' && row[1] !== null ? Number(row[1]).toLocaleString() : '-';
+        const note   = row[2] ? `<div class="card-note">📌 ${row[2]}</div>` : '';
+        const type   = row[3] ? `<div class="card-type">${row[3]}</div>` : '';
+        return `
+          <div class="card" style="animation-delay:${i * 0.03}s">
+            <div class="card-left">
+              <div class="card-name">${row[0]}</div>
+              ${note}${type}
+            </div>
+            <div class="card-right">
+              <div class="card-price">${price}</div>
+              <div class="card-unit">฿ / ชิ้น</div>
+              <button class="edit-btn" onclick="openModal(${rowIdx},'${esc(row[0])}','${row[1]}','${esc(row[2]||'')}')">แก้ไข</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function esc(s) { return String(s).replace(/'/g, "\\'"); }
+
+    function openModal(rowIdx, name, price, note) {
+      editingRow = rowIdx;
+      document.getElementById('modalTitle').textContent  = name;
+      document.getElementById('modalSub').textContent    = `แถวที่ ${rowIdx} ใน Sheet`;
+      document.getElementById('newPrice').value          = price;
+      document.getElementById('newNote').value           = note;
+      document.getElementById('savingText').textContent  = '';
+      document.getElementById('saveBtn').disabled        = false;
+      document.getElementById('modalBg').classList.add('open');
+      setTimeout(() => document.getElementById('newPrice').focus(), 300);
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modalBg')) closeModalDirect();
+    }
+    function closeModalDirect() {
+      document.getElementById('modalBg').classList.remove('open');
+      editingRow = null;
+    }
+
+    async function saveData() {
+      if (!editingRow) return;
+      const price = document.getElementById('newPrice').value;
+      const note  = document.getElementById('newNote').value;
+
+      const btn  = document.getElementById('saveBtn');
+      const info = document.getElementById('savingText');
+      btn.disabled = true;
+      info.textContent = 'กำลังบันทึก...';
+
+      try {
+        const url = `${API_URL}?action=update&row=${editingRow}&price=${encodeURIComponent(price)}&note=${encodeURIComponent(note)}`;
+        const res  = await fetch(url);
+        const json = await res.json();
+        if (json.status === 'ok') {
+          // อัปเดต local data ทันที
+          fullData[editingRow - 1][1] = price;
+          fullData[editingRow - 1][2] = note;
+          closeModalDirect();
+          filterData();
+        }
+      } catch (err) {
+        info.textContent = 'บันทึกไม่สำเร็จ ลองอีกครั้ง';
+        btn.disabled = false;
+      }
+    }
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
